@@ -16,16 +16,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-			.httpBasic().disable()
-			.formLogin().disable()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		
+		http.csrf().disable();
+		http.httpBasic().disable();
+		http.formLogin().disable();
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // session사용 안하겠다.
 		http.authorizeRequests()
-			.antMatchers("/auth/**")
+			.antMatchers("/auth/**") 
 			.permitAll()
 			.anyRequest()
 			.authenticated();

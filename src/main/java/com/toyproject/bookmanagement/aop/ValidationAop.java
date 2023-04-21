@@ -13,22 +13,21 @@ import org.springframework.validation.BindingResult;
 
 import com.toyproject.bookmanagement.exception.CustomException;
 
-
 @Aspect
 @Component
 public class ValidationAop {
-
+	
 	@Pointcut("@annotation(com.toyproject.bookmanagement.aop.annotation.ValidAspect)")
 	private void pointCut() {}
 	
 	@Around("pointCut()")
 	public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 		
-		Object[] args = joinPoint.getArgs();
+		Object[] args = joinPoint.getArgs(); 
 		BindingResult bindingResult = null;
 		
-		
 		for(Object arg : args) {
+			
 			if(arg.getClass() == BeanPropertyBindingResult.class) {
 				bindingResult = (BeanPropertyBindingResult) arg;
 			}
@@ -36,15 +35,15 @@ public class ValidationAop {
 		
 		if(bindingResult.hasErrors()) {
 			Map<String, String> errorMap = new HashMap<>();
+			
 			bindingResult.getFieldErrors().forEach(error -> {
 				errorMap.put(error.getField(), error.getDefaultMessage());
 			});
 			
 			throw new CustomException("Validation Failed", errorMap);
-			
 		}
 		
 		return joinPoint.proceed();
+		
 	}
-
 }
