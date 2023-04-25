@@ -41,8 +41,7 @@ public class AuthenticationController {
 	}
 	
 	@GetMapping("/authenticated")
-	public ResponseEntity<?> authenticated(String accessToken) {
-		
+	public ResponseEntity<?> authenticated(String accessToken) {	
 		return ResponseEntity.ok().body(authenticationService.authenticated(accessToken));
 		
 	}
