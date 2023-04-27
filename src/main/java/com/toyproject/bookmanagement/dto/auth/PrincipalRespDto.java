@@ -10,5 +10,4 @@ public class PrincipalRespDto {
 	private String email;
 	private String name;
 	private String authorities;
-
 }

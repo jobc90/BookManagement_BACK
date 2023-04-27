@@ -19,7 +19,7 @@ public class User {
 	private String password;
 	private String name;
 	private String provider;
-
+	
 	private List<Authority> authorities;
 	
 	public PrincipalUser toPrincipal() {
@@ -31,3 +31,19 @@ public class User {
 				.build();
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

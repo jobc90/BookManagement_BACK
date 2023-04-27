@@ -1,9 +1,10 @@
-package com.toyproject.bookmanagement.cotroller;
+package com.toyproject.bookmanagement.controller;
 
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,33 +18,32 @@ import com.toyproject.bookmanagement.service.AuthenticationService;
 
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 	
 	private final AuthenticationService authenticationService;
-	
-	
+
 	@ValidAspect
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginReqDto loginReqDto, BindingResult bindingResult) {
-		System.out.println(loginReqDto);
+		
 		return ResponseEntity.ok(authenticationService.signin(loginReqDto));
 	}
 	
 	@ValidAspect
 	@PostMapping("/signup")
-	public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto, BindingResult bindingResult){
+	public ResponseEntity<?> signup(@Valid @RequestBody SignupReqDto signupReqDto, BindingResult bindingResult) {
 		authenticationService.checkDuplicatedEmail(signupReqDto.getEmail());
 		authenticationService.signup(signupReqDto);
 		return ResponseEntity.ok().body(true);
 	}
 	
 	@GetMapping("/authenticated")
-	public ResponseEntity<?> authenticated(String accessToken) {	
-		return ResponseEntity.ok().body(authenticationService.authenticated(accessToken));
+	public ResponseEntity<?> authenticated(String accessToken) {
 		
+		return ResponseEntity.ok().body(authenticationService.authenticated(accessToken));
 	}
 	
 	@GetMapping("/principal")
@@ -51,3 +51,22 @@ public class AuthenticationController {
 		return ResponseEntity.ok().body(authenticationService.getPrincipal(accessToken));
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

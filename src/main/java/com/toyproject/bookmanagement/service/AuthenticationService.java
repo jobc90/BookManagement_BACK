@@ -17,47 +17,53 @@ import com.toyproject.bookmanagement.entity.User;
 import com.toyproject.bookmanagement.exception.CustomException;
 import com.toyproject.bookmanagement.exception.ErrorMap;
 import com.toyproject.bookmanagement.repository.UserRepository;
-import com.toyproject.bookmanagement.security.jwt.JwtTokenProvider;
+import com.toyproject.bookmanagement.security.JwtTokenProvider;
 
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class AuthenticationService implements UserDetailsService {
 	
 	private final UserRepository userRepository;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final JwtTokenProvider jwtTokenProvider;
 	
-
-	public void checkDuplicatedEmail(String email) { // 이메일 중복 확인
+	
+	public void checkDuplicatedEmail(String email) {
 		if(userRepository.findUserByEmail(email) != null) {
-			throw new CustomException("DuplicatedEmail 오류", ErrorMap.builder().put("email", "사용중").build());
+			throw new CustomException("Duplicated Email", 
+					ErrorMap.builder().put("email", "사용중인 이메일입니다").build());
 		}
 	}
 	
-	public void signup(SignupReqDto signupReqDto) { //회원가입 권한
+	public void signup(SignupReqDto signupReqDto) {
 		User userEntity = signupReqDto.toEntity();
+		
 		userRepository.saveUser(userEntity);
 		
-		userRepository.saveAuthority(Authority.builder().userId(userEntity.getUserId()).roleId(1).build());
+		userRepository.saveAuthority(Authority.builder()
+				.userId(userEntity.getUserId())
+				.roleId(1)
+				.build());
 	}
 	
 	public JwtRespDto signin(LoginReqDto loginReqDto) {
-		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
-				new UsernamePasswordAuthenticationToken(loginReqDto.getEmail(),loginReqDto.getPassword()); //요청보낼 id password를 매니저가 알아볼수있게 변환
-	
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(usernamePasswordAuthenticationToken);
 		
-		return jwtTokenProvider.createToken(authentication);
+		UsernamePasswordAuthenticationToken authenticationToken = 
+				new UsernamePasswordAuthenticationToken(loginReqDto.getEmail(), loginReqDto.getPassword());
+		
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+		
+		return jwtTokenProvider.generateToken(authentication);
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		User userEntity = userRepository.findUserByEmail(username);
-		
+		 
 		if(userEntity == null) {
 			throw new CustomException("로그인 실패", ErrorMap.builder().put("email", "사용자 정보를 확인하세요").build());
 		}
@@ -71,8 +77,6 @@ public class AuthenticationService implements UserDetailsService {
 	
 	public PrincipalRespDto getPrincipal(String accessToken) {
 		Claims claims = jwtTokenProvider.getClaims(jwtTokenProvider.getToken(accessToken));
-		System.out.println(jwtTokenProvider);
-		System.out.println(claims);
 		User userEntity = userRepository.findUserByEmail(claims.getSubject());
 		
 		return PrincipalRespDto.builder()
@@ -82,6 +86,11 @@ public class AuthenticationService implements UserDetailsService {
 				.authorities((String) claims.get("auth"))
 				.build();
 	}
- 
-	
 }
+
+
+
+
+
+
+

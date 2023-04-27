@@ -6,11 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Builder
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class Authority {
-	
 	private int authorityId;
 	private int userId;
 	private int roleId;

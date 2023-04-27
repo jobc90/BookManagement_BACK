@@ -16,9 +16,6 @@ import lombok.Data;
 @Builder
 @Data
 public class PrincipalUser implements UserDetails {
-
-	private static final long serialVersionUID = -3111788011678542210L;
-	
 	private int userId;
 	private String email;
 	private String password;
@@ -27,9 +24,11 @@ public class PrincipalUser implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+		
 		this.authorities.forEach(authority -> {
 			authorities.add(new SimpleGrantedAuthority(authority.getRole().getRoleName()));
 		});
+		
 		return authorities;
 	}
 
@@ -62,7 +61,5 @@ public class PrincipalUser implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-	
-	
 
 }
