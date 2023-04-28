@@ -186,6 +186,11 @@
 		and user_id = #{userId}
 	</delete>
 	
+	<insert id="registeBookList" parameterType="Integer">
+		insert into book_list_tb
+		values (0, #{bookId}, now())
+	</insert>
+	
 </mapper>
 
 

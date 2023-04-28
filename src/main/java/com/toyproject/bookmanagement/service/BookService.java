@@ -112,8 +112,11 @@ public class BookService {
 		Map<String, Object> map = new HashMap<>();
 		map.put("bookListId", bookListId);
 		map.put("userId", userId);
-		
 		return bookRepository.returnBook(map);
+	}
+	
+	public int registeBookList(int bookId) {
+		return bookRepository.registeBookList(bookId);
 	}
 	
 	

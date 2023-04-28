@@ -20,7 +20,7 @@ import com.toyproject.bookmanagement.service.BookService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequiredArgsConstructor
+@RequiredArgsConstructor //bookService를 IOC에서 꺼내기 위해서
 public class BookController {
 	
 	private final BookService bookService;
@@ -75,6 +75,12 @@ public class BookController {
    @DeleteMapping("/book/rental/{bookListId}")
    public ResponseEntity<?> returnBook(@PathVariable int bookListId, @RequestParam int userId) {
 	   return ResponseEntity.ok().body(bookService.returnBook(bookListId, userId));
+   }
+   
+   @PostMapping("/admin/book/list")
+   public ResponseEntity<?> bookRegister(@RequestBody Map<String, Integer> requestMap) {
+	   return ResponseEntity.ok().body(bookService.registeBookList(requestMap.get("bookId")));
+	   
    }
 	
 }
